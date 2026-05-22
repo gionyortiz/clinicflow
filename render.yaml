@@ -1,0 +1,27 @@
+# render.yaml — one-click deploy on Render.com
+# Push this repo to GitHub, then connect on https://render.com/
+# Render reads this file and sets everything up automatically.
+
+services:
+  - type: web
+    name: clinicflow-api
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend
+    envVars:
+      - key: TWILIO_ACCOUNT_SID
+        sync: false          # fill in Render dashboard
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_FROM_NUMBER
+        sync: false
+      - key: GOOGLE_ACCESS_TOKEN
+        sync: false
+      - key: GOOGLE_CALENDAR_ID
+        value: primary
+      - key: DATABASE_PATH
+        value: /data/clinicflow.db   # persistent disk mount point
+    disk:
+      name: clinicflow-db
+      mountPath: /data
+      sizeGB: 1

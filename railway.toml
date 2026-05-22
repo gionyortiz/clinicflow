@@ -1,0 +1,8 @@
+# railway.toml — deploy on Railway.app
+# Push repo to GitHub, connect at https://railway.app/
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend"
+restartPolicyType = "on_failure"

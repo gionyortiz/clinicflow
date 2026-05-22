@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClinicFlow — Turn Missed Calls Into Booked Patients</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./landing.css" />
+  </head>
+  <body>
+    <div class="bg-glow bg-glow-a"></div>
+    <div class="bg-glow bg-glow-b"></div>
+
+    <nav class="nav">
+      <div class="brand">
+        <span class="dot"></span>
+        ClinicFlow
+      </div>
+      <a class="nav-cta" href="#contact">Book a Demo</a>
+    </nav>
+
+    <header class="hero">
+      <p class="pill">AI Receptionist for Dental Clinics</p>
+      <h1>Stop Losing Patients to Voicemail.</h1>
+      <p class="subtitle">
+        ClinicFlow answers missed calls, books appointments, and follows up
+        automatically — 24/7. Most clinics recover $4,000+ per month in lost
+        revenue within the first 30 days.
+      </p>
+      <div class="cta-row">
+        <a class="btn primary" href="#contact">Start a 14-Day Pilot</a>
+        <a class="btn ghost" href="./index.html">View Live Demo</a>
+      </div>
+      <div class="proof-row">
+        <div><strong>3x</strong><span>more booked visits</span></div>
+        <div><strong>24/7</strong><span>auto-response</span></div>
+        <div><strong>5 min</strong><span>setup</span></div>
+      </div>
+    </header>
+
+    <section class="features">
+      <article class="feature">
+        <h3>Answer Every Call</h3>
+        <p>AI voice agent greets callers, captures details, and books them in.</p>
+      </article>
+      <article class="feature">
+        <h3>Instant SMS Follow-up</h3>
+        <p>Missed call? We text patients a booking link before they call a competitor.</p>
+      </article>
+      <article class="feature">
+        <h3>Calendar Sync</h3>
+        <p>Real-time booking into your Google Calendar. No double-bookings.</p>
+      </article>
+      <article class="feature">
+        <h3>Reminders + No-show Recovery</h3>
+        <p>Automated reminders 24h before, and re-engagement texts for no-shows.</p>
+      </article>
+    </section>
+
+    <section class="pricing" id="pricing">
+      <h2>Simple Pricing</h2>
+      <div class="plans">
+        <article class="plan">
+          <h3>Starter</h3>
+          <p class="price">$399<span>/mo</span></p>
+          <ul>
+            <li>AI receptionist</li>
+            <li>SMS follow-up</li>
+            <li>Calendar booking</li>
+            <li>Up to 200 calls/mo</li>
+          </ul>
+          <a class="btn primary" href="#contact">Start Pilot</a>
+        </article>
+        <article class="plan featured">
+          <h3>Growth</h3>
+          <p class="price">$699<span>/mo</span></p>
+          <ul>
+            <li>Everything in Starter</li>
+            <li>Reminders + no-show recovery</li>
+            <li>Bilingual EN/ES</li>
+            <li>Up to 800 calls/mo</li>
+          </ul>
+          <a class="btn primary" href="#contact">Start Pilot</a>
+        </article>
+        <article class="plan">
+          <h3>Multi-Location</h3>
+          <p class="price">$999<span>/mo</span></p>
+          <ul>
+            <li>Everything in Growth</li>
+            <li>Multiple calendars</li>
+            <li>Priority support</li>
+            <li>Unlimited calls</li>
+          </ul>
+          <a class="btn primary" href="#contact">Talk to Sales</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <h2>Start Your 14-Day Pilot</h2>
+      <p>If we do not increase your booked appointments, cancel any time.</p>
+      <form id="contact-form">
+        <input name="clinic" type="text" placeholder="Clinic name" required />
+        <input name="name" type="text" placeholder="Your name" required />
+        <input name="phone" type="tel" placeholder="Phone" required />
+        <input name="email" type="email" placeholder="Email" required />
+        <button type="submit" class="btn primary">Request Pilot</button>
+        <p id="contact-message" class="form-message"></p>
+      </form>
+    </section>
+
+    <footer>
+      <span>© ClinicFlow MVP</span>
+      <a href="./index.html">Dashboard</a>
+    </footer>
+
+    <script type="module">
+      const form = document.getElementById("contact-form");
+      const msg = document.getElementById("contact-message");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        msg.textContent = "Sending...";
+        const data = Object.fromEntries(new FormData(form).entries());
+        try {
+          await fetch("http://127.0.0.1:8000/api/leads", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              full_name: `${data.name} (${data.clinic})`,
+              phone: data.phone,
+              email: data.email,
+              service: "Pilot request",
+              preferred_time: "ASAP",
+              source: "web",
+            }),
+          });
+          msg.textContent = "Thanks! We will reach out within 24 hours.";
+          form.reset();
+        } catch {
+          msg.textContent = "Could not send. Try again.";
+        }
+      });
+    </script>
+  </body>
+</html>

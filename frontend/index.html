@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClinicFlow | Operations Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow bg-glow-a"></div>
+    <div class="bg-glow bg-glow-b"></div>
+
+    <nav class="dash-nav">
+      <div class="brand"><span class="dot"></span>ClinicFlow</div>
+      <div class="nav-links">
+        <a href="./landing.html">Landing Page</a>
+        <a href="http://127.0.0.1:8000/docs" target="_blank">API Docs</a>
+      </div>
+      <div id="sync-status" class="sync-status">—</div>
+    </nav>
+
+    <main class="dashboard">
+
+      <!-- KPI Row -->
+      <section class="kpi-section">
+        <article class="kpi-card">
+          <span>Total Leads</span>
+          <strong id="kpi-total">—</strong>
+        </article>
+        <article class="kpi-card">
+          <span>New</span>
+          <strong id="kpi-new">—</strong>
+        </article>
+        <article class="kpi-card kpi-green">
+          <span>Booked</span>
+          <strong id="kpi-booked">—</strong>
+        </article>
+        <article class="kpi-card kpi-red">
+          <span>No-Show</span>
+          <strong id="kpi-noshow">—</strong>
+        </article>
+        <article class="kpi-card kpi-orange">
+          <span>Missed Revenue</span>
+          <strong id="kpi-revenue">—</strong>
+        </article>
+      </section>
+
+      <!-- Two column: New Lead form | Book Appointment form -->
+      <div class="two-col">
+        <section class="card">
+          <h2>New Lead</h2>
+          <form id="lead-form">
+            <label>Full Name<input name="full_name" type="text" required minlength="2" /></label>
+            <label>Phone<input name="phone" type="tel" required placeholder="+1 787 555 0000" /></label>
+            <label>Email<input name="email" type="email" /></label>
+            <label>Service
+              <select name="service" required>
+                <option value="Cleaning">Cleaning</option>
+                <option value="Whitening">Whitening</option>
+                <option value="Emergency">Emergency</option>
+                <option value="Implants">Implants</option>
+                <option value="Consultation">Consultation</option>
+              </select>
+            </label>
+            <label>Preferred Time<input name="preferred_time" type="text" required placeholder="Tomorrow 10:00 AM" /></label>
+            <label>Source
+              <select name="source" required>
+                <option value="web">Web Form</option>
+                <option value="missed_call">Missed Call</option>
+                <option value="sms">SMS</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
+            <button type="submit" class="btn-primary">Add Lead</button>
+            <p id="lead-msg" class="form-msg"></p>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Book Appointment</h2>
+          <form id="booking-form">
+            <label>Lead ID<input name="lead_id" type="number" required min="1" /></label>
+            <label>Date &amp; Time<input name="start_time" type="datetime-local" required /></label>
+            <label>Duration (min)
+              <select name="duration_minutes">
+                <option value="15">15 min</option>
+                <option value="30" selected>30 min</option>
+                <option value="45">45 min</option>
+                <option value="60">60 min</option>
+                <option value="90">90 min</option>
+              </select>
+            </label>
+            <label>Notes<input name="notes" type="text" placeholder="Optional notes" /></label>
+            <label class="label-check">
+              <input name="push_to_google" type="checkbox" value="true" />
+              Push to Google Calendar
+            </label>
+            <button type="submit" class="btn-primary">Create Booking</button>
+            <p id="booking-msg" class="form-msg"></p>
+          </form>
+        </section>
+      </div>
+
+      <!-- Leads table -->
+      <section class="card full-width">
+        <div class="section-header">
+          <h2>Recent Leads</h2>
+          <button class="btn-ghost" onclick="refreshAll()">Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Service</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Preferred Time</th>
+                <th>Created</th>
+                <th>Update</th>
+              </tr>
+            </thead>
+            <tbody id="lead-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Bookings table -->
+      <section class="card full-width">
+        <h2>Scheduled Appointments</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Service</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Notes</th>
+                <th>Status</th>
+                <th>ICS</th>
+              </tr>
+            </thead>
+            <tbody id="booking-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Messages log -->
+      <section class="card full-width">
+        <h2>SMS Message Log</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Direction</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="message-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
