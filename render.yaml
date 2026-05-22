@@ -6,6 +6,7 @@ services:
   - type: web
     name: clinicflow-api
     runtime: python
+    pythonVersion: "3.11.9"
     buildCommand: pip install -r backend/requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend
     envVars:
